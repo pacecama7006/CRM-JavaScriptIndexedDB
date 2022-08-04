@@ -55,6 +55,20 @@
 
             return;
         }
+
+        // Crear un objeto con la información del formulario con objectLiteral
+        // Como
+        const cliente = {
+            // nombre: nombre, Como la llave y el valor son iguales, me puedo deshacer de uno
+            nombre,
+            email,
+            telefono,
+            empresa,
+            id: Date.now(),
+        };
+
+        // console.log(cliente);
+        crearNuevoCliente(cliente);
     }
     // Fin validar cliente
 
@@ -91,5 +105,32 @@
         
     }
     // Fin imprimirAlerta
+
+    // Función que permite crear un nuevo cliente
+    function crearNuevoCliente(cliente) {
+        // Creo la transacción
+        const transaction = DB.transaction(['crm'], 'readwrite');
+        // Creo el objectStore
+        const objectStore = transaction.objectStore('crm');
+        // Agrego el cliente al objectStore para que lo pase a la bd
+        objectStore.add(cliente);
+        // Si hay un error
+        transaction.onerror = function(){
+            // console.log('Hubo un error en la transacción');
+            imprimirAlerta('Hubo un error al agregar el cliente. Email ya existe', 'error');
+        };
+        // Si todo sale bien
+        transaction.oncomplete = function(){
+            // console.log('Cliente agregado');
+            // Mando mensaje al usuario
+            imprimirAlerta('El cliente se agregó correctamente');
+            // Redirigo al usuario a index.html
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
+        };
+
+    }
+    // Fin crearNuevoCliente
 
 })();
