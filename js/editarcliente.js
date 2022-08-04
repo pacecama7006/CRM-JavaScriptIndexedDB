@@ -2,11 +2,14 @@
 
     // Variable para almacenar el valor de la BD
     let DB;
+    // Variable para almacenar el id del cliente
+    let idCliente;
     // Variables del formulario
     const nombreInput = document.querySelector('#nombre');
     const emailInput = document.querySelector('#email');
     const telefonoInput = document.querySelector('#telefono');
     const empresaInput = document.querySelector('#empresa');
+    const formulario = document.querySelector('#formulario')
 
     document.addEventListener('DOMContentLoaded', ()=>{
         // Conectamos a la BD
@@ -15,7 +18,7 @@
         // Verificar los parámetros que existen en la url
         const parametrosURL = new URLSearchParams(window.location.search);
         // Obtengo el id del cliente
-        const idCliente = parametrosURL.get('id');
+        idCliente = parametrosURL.get('id');
         // console.log(idCliente);
 
         // Si tengo un id de cliente
@@ -29,6 +32,9 @@
                 
             }, 100);
         }
+
+        // Actualiza el registro
+        formulario.addEventListener('submit', actualizarCliente);
     });
     // Fin eventListener
 
@@ -96,5 +102,54 @@
         empresaInput.value = empresa;
     };
     // fin llenarFormulario
+
+    // Función que actualiza un cliente en la Bd
+    function actualizarCliente(e) {
+        // Prevengo el comportamiento por defecto
+        e.preventDefault();
+        // Valido el formulario
+        if (nombreInput.value === '' || emailInput.value === '' || telefonoInput === '' || empresaInput === '') {
+            // console.log('Todos los campos son obligatorios');
+            imprimirAlerta('Todos los campos son obligatorios', 'error')
+            // paro para que no siga leyendo código
+            return;
+        }
+
+        // Si pasa la validación. Actualizar cliente
+        // Creo objeto con los nuevos datos capturados en el formulario
+        const clienteActualizado = {
+            nombre: nombreInput.value,
+            email: emailInput.value,
+            telefono: telefonoInput.value,
+            empresa: empresaInput.value,
+            id: Number(idCliente),
+        };
+
+        // console.log(clienteActualizado);
+        // Creo instancia de transaction para actualizar el cliente
+        const transaction = DB.transaction(['crm'], 'readwrite');
+        // Creo instancia de objectStore
+        const objectStore = transaction.objectStore('crm');
+        // Actualizo la bd
+        objectStore.put(clienteActualizado);
+
+        // Si hay un error
+        transaction.onerror = function(){
+            // console.log('Hubo un error al actualizar el registro');
+            imprimirAlerta('Hubo un error al actualizar el registro', 'error');
+        };
+
+        // Si la transacción se completa
+        transaction.oncomplete = function(){
+            console.log('Editado correctamente');
+            // Informo al usuario
+            imprimirAlerta('Registro actualizado correctamente');
+            // Redirecciono al usuario a index.html
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
+        };
+
+    }
 
 })();
