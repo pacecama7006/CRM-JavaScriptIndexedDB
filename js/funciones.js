@@ -1,4 +1,6 @@
 
+// Aplico la variable global DB para tener una instancia de la BD
+let DB; //Tuve que agregarla aquí y quitarla de nvoCliente y editarCliente para que funcionara bien
 // Función que nos permite conectarnos a la BD
 function conectarDB() {
     // Variable que almacena la apertura de la conexión

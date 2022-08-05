@@ -1,7 +1,8 @@
 (function(){
 
     // Variable para almacenar el valor de la BD
-    let DB;
+    // let DB; Tuve que eliminarla de aqui y pasarla a funciones para que funcionara bien
+ 
     // Variable para almacenar el id del cliente
     let idCliente;
     // Variables del formulario

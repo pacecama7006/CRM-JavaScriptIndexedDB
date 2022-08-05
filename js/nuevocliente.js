@@ -1,7 +1,7 @@
 // Función ify para tener las variables y funciones locales
 (function(){
     // Variable para almacenar los datos de la bd
-    let DB;
+    // let DB; Tuve que eliminarla de aqui y pasarla a funciones para que funcionara bien
     // Variables del formulario
     const formulario = document.querySelector('#formulario');
 
